@@ -162,7 +162,7 @@ Vx Nodes can implement
 * a parametersless public constructor which is called whenever this node is created
 * `IDisposable` is called when the node is deleted or the scene containing the instance gets deleted.
 
-It is not recomened to use a contructor and implement `IDisposable`, because this let us assume that you want to do anything with external resources, threads or other *unmanaged* elements. Instead consider the use of [Custom Resources](#custom-resources)!
+It is not recomened to use a constructor and implement `IDisposable`, because this let us assume that you want to do anything with external resources, threads or other *unmanaged* elements. Instead consider the use of [Custom Resources](#custom-resources)!
 
 ### Persistence
 
