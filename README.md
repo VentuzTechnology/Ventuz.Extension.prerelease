@@ -9,7 +9,7 @@ Table of Contents
   - [Abstract](#abstract)
   - [Using the API](#using-the-api)
   - [Deployment](#deployment)
-  - [Architechture](#architecture)
+  - [Architecture](#architecture)
     - [Vx-Tool (vx.exe)](#vx-tool-vxexe)
   - [API: Custom Nodes](#api-custom-nodes)
     - [Constructor and IDisposable](#constructor-and-idisposable)
