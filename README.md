@@ -87,7 +87,7 @@ This assembly can load other assemblies or DLL's or perform p/invoke calls. The 
 
 Vx Assemblies will later use NuGet technology to install, manage, update and uninstall installed extensions. Version and dependency management will also be handled by NuGet. See [Roadmap](#roadmap)
 
-In the current version, a Vx code must be present in a specific location to be recognized by Ventuz. Currently this is the path:
+In the current version, a Vx code must be present in a specific location to be detected by Ventuz. Currently this is the path:
 
 ```
 C:\Users\<username>\Documents\Ventuz6\Vx
@@ -116,7 +116,7 @@ MyFirstVxCode\MyFirstVxCode.vx.dll
 
 Other files needed by the Vx code should also be located in this folder. This structure is considered as a preparation to the NuGet integration (see [Roadmap](#roadmap)). Dependencies to other assembliess are currently not managed by Ventuz. NuGet will take care of this later.
 
-Now, if a Vx code is needed on another system, simply copy the entire folder into the Vx directory of the target system. Done.
+Now, if a Vx code is needed on another system, simply copy the entire folder into the Vx directory of the target system. Done!
 
 ## Architecture
 
@@ -146,7 +146,7 @@ Vx allows you to develop your own nodes. The type of node defines its functional
 | Hierarchy Node | `VxHierarchyNode` |
 | Layers         | `VxLayerNode`     |
 
-To define your own node, you just have to declare a `public class` that derives from the corresponding `base`. This class must not be abstract! 
+To define your own node, you just have to declare a `public class` that derives from the corresponding `base class`. This class must not be abstract! 
 
 Here an Example to declare a simple `Content Node`. This implementation defines a Content Node that does nothing, but it will appear in the Ventuz Toolbox with its class name `MyEmptyNode` under the `Vx` tab/category, because it doesn't define any [Metadata](#metadata-for-nodes) yet.
 
@@ -189,28 +189,28 @@ The class `VxPersistentData` is used to serialize/deserialize simple primitive d
 
 ### Phases
 
-Ventuz is a real-time graphics system designed for speed, performance and perfect balance between CPU and GPU. Therefore, it is important that certain operations are only executed in certain phases of the rendering process in order not to disturb the balance! It is also important that the right thread executes the right code at the right time. Therefore it is strongly advised not to use custom threads or `async` tasks if you are not sure whether this is allowed at a given point!
+Ventuz is a real-time graphics system designed for speed, performance and perfect balance between CPU and GPU. Therefore, it is important that certain operations are only executed in certain phases of the rendering process in order to not disturb the balance! It is also important that the right thread executes the right code at the right time. Therefore it is strongly advised not to use custom threads or `async` tasks if you are not sure whether this is allowed at a given point!
 
 Three phases are currently usable in Vx:
 
 **[Validation Phase](#validation-phase)**\
-Here, information about the input properties is processed and results are sent to the output properties and thus to dependent nodes. Events are also received and sent in the validation phase. Resources are also generated in the validation phase.
+Here information about the input properties are processed and results are sent to the output properties and thus to dependent nodes. Events are also received and sent in the validation phase. Resources are also generated in the validation phase.
 
 **[Rendering Phase](#rendering-phase)**\
-In the rendering phase, elements are sent to the renderer, but not rendered directly. This may happen several times depending on the view, stereoscopy and other things. In this phase, no more write accesses to the elements of the validation can take place.
+In the rendering phase, elements are sent to the renderer, but not rendered directly. This may happen several times depending on the view, stereoscopy and other things. In this phase, no further write accesses to the elements of the validation can take place.
 
 **[Design Phase](#design-phase)**\
-The Design phase is "before" Validation and Rendering. Structural changes to the scene or UI elements can be accessed edited here. Actions in the Designer are disruptive and can affect the performance of Validation and Rendering in such a way that a constant frame rate is no longer guaranteed. The Ventuz Designer GUI works exclusively in the Design phase.
+The Design phase is "before" Validation and Rendering. Structural changes to the scene or UI elements can be performed here. Actions in the Designer are disruptive and can affect the performance of Validation and Rendering in such a way that a constant and optimal frame rate is no longer guaranteed. The Ventuz Designer GUI works exclusively in the Design phase.
 
 ### Validation Phase
 
 #### General
 
-Nodes can receive data from other nodes in the validation phase, distribute them and generate other new data. For example, results from calculations or new resources (textures, geometries, etc.).
+Nodes can receive data from other nodes in the validation phase, distribute it and generate new data. For example: results from calculations or new resources (textures, geometries, etc.).
 
-A node is only validated - called in the validation phase - if one or more of its input properties have changed. More precisely, the sending node determines whether a value has changed by informing its dependent nodes. The actual value does not have to have changed.
+A node is only validated - called in the validation phase - if one or more of its input properties have changed. More precisely, the sending node determines whether a value has changed by informing its dependent nodes. The actual value does not necessarily have to have changed.
 
-Here is an example of a very simple validation. A validation function is defined that declares two input properties (`A` and `B`) of type `float` and the output property `Sum` also of type `float`.
+Here is an example of a very simple validation. A validation function is defined here that declares two input properties (`A` and `B`) of type `float` and the output property `Sum` again of type `float`.
 Validation functions must start with the prefix `Validate...`. If this validation returns a value, then this value must be appended directly to the prefix with its name (here `Sum`).
 
 ```c#
@@ -221,7 +221,7 @@ public class MySimpleSum : VxContentNode
 }
 ```
 
-A node can (and should) define multiple validation functions. The reason is simple: If certain input properties change, then it is not necessarily necessary to calculate the entire validation again. So it makes sense to consider which inputs lead to which results. Here is a (primitive) example. The upper sum is to be multiplied again by a factor. If only the factor changes, the sum of `A` and `B` does not have to be calculated again. This is an abstract example and is only meant to illustrate the use of split validation:
+A node can (and should) define multiple validation functions. The reason is simple: If certain input properties change, then it is not always necessary to calculate the entire validation again. So it makes sense to consider which inputs lead to which results. Here is a (primitive) example. The upper sum is to be multiplied by a factor. If only the factor changes, the sum of `A` and `B` does not need to be calculated again. This is an abstract example and is only meant to illustrate the use of split validation:
 
 ```c#
 public class MySimpleSumFact : VxContentNode
@@ -234,7 +234,7 @@ public class MySimpleSumFact : VxContentNode
 }
 ```
 
-Please note that the name `Sum` and the type of it `float` must be equal at all places where it is used to be considered as the same.
+Please note that the name `Sum` and the type of it `float` must match at all places where they are used to be considered as the same.
 
 The Vx system analyzes all validation functions found, their input and output properties and creates a dependency tree of them. In this way, Ventuz knows exactly under which changes in the properties the functions must be called: If only `Factor` changes and `Sum` has already been calculated, `ValidateSum` will not be called anymore.
 
@@ -255,10 +255,10 @@ public class MySimpleSumFact2 : VxContentNode
 }
 ```
 
-By convention, names with an underscore prefix are treated as *Intermediate* and are not visible to the node user and generally not processed further by Ventuz. Using *Intermediate properties* have two important advantages:
-* you don't have to define any data fields in your class. Ventuz takes care of storing the actual values.
-* if the are no field defined to store these values, you have to define them in the parameter scope of the Validation function. This prevents you from accessing them wrong, because the compiler will help you here.
-*Intermediate properties* can be of any type - as well custom types, while visible properties must be handled by Ventuz, bindings and are therefore restricted to the following types:
+By convention, names with an underscore prefix are treated as *Intermediate* and are not visible to the node user and generally not processed further by Ventuz. Using *Intermediate properties* has two important advantages:
+* you do not have to define any data fields in your class. Ventuz takes care of storing the actual values.
+* if there are no fields defined to store these values, you have to define them in the parameter scope of the Validation function. This prevents you from accessing them wrongly, because the compiler will help you here.
+*Intermediate properties* can be of any type - as well custom types, while visible properties must be handled by Ventuz, bindings and properties are therefore restricted to the following types:
 
 **Supported Ventuz Property Types**
 
