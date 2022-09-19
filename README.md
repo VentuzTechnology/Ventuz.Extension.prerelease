@@ -150,7 +150,7 @@ To define your own node, you just have to declare a `public class` that derives 
 
 Here an Example to declare a simple `Content Node`. This implementation defines a Content Node that does nothing, but it will appear in the Ventuz Toolbox with it's class name `MyEmptyNode` under the `Vx` tab/category, because it doesn't define any [Metadata](#metadata-for-nodes) yet.
 
-``` c#
+```c#
 public class MyEmptyNode : VxContentNode
 {
 }
@@ -167,7 +167,7 @@ It is not recomened to use a constructor and implement `IDisposable`, because th
 ### Persistence
 
 A Vx node can implement `IPersistence` to save and load additional data with the node. 
-``` c#
+```c#
 public interface IPersistence
 {
     void Serialize(VxPersistentData dataToFill);
@@ -177,7 +177,7 @@ public interface IPersistence
 
 The class `VxPersistentData` is used to serialize/deserialize simple primitive data as Dictionary (Key-Value-Pairs). It only supports the following primitve types. For more complex data you should consider using JSON text or base64 encoded binary data.
 
-``` c#
+```c#
     bool,
     byte, sbyte,
     short, ushort,
@@ -213,7 +213,7 @@ A node is only validated - called in the validation phase - if one or more of it
 Here is an example of a very simple validation. A validation function is defined that declares two input properties (`A` and `B`) of type `float` and the output property `Sum` also of type `float`.
 Validation functions must start with the prefix `Validate...`. If this validation returns a value, then this value must be appended directly to the prefix with its name (here `Sum`).
 
-``` c#
+```c#
 public class MySimpleSum : VxContentNode
 {
     public float ValidateSum(float A, float B)
@@ -223,7 +223,7 @@ public class MySimpleSum : VxContentNode
 
 A node can (and should) define multiple validation functions. The reason is simple: If certain input properties change, then it is not necessarily necessary to calculate the entire validation again. So it makes sense to consider which inputs lead to which results. Here is a (primitive) example. The upper sum is to be multiplied again by a factor. If only the factor changes, the sum of `A` and `B` does not have to be calculated again. This is an abstract example and is only meant to illustrate the use of split validation:
 
-``` c#
+```c#
 public class MySimpleSumFact : VxContentNode
 {
     public float ValidateSum(float A, float B)
@@ -244,7 +244,7 @@ This node will now have the following properties:
 
 What if the intermediate result `Sum` should not be visible to the user at all? In this case we use an underscore as prefix for the name of the value: `_Sum`.
 
-``` c#
+```c#
 public class MySimpleSumFact2 : VxContentNode
 {
     public float Validate_Sum(float A, float B)
@@ -262,7 +262,7 @@ By convention, names with an underscore prefix are treated as *Intermediate* and
 
 **Supported Ventuz Property Types**
 
-``` c#
+```c#
 // primitives
 bool, int
 float, double
@@ -279,7 +279,7 @@ string,
 System.Uri
 
 // arrays
-float[], int[], bool[], string[], double[]
+bool[], int[], float[], double[], string[]
 
 // math arrays
 Ventuz.Vx.Matrix44[], Ventuz.Vx.Matrix44A[]
@@ -299,12 +299,12 @@ What is if my Validation function produces more than just a single value? There 
 3. A mix of 1 and 2
 
 Examples:
-``` c#
+```c#
 // return a named tuple
 public (float X, float Y) Validate1(float X1, float Y1, float X2, float Y2)
     => (X1 + X2, Y1 + Y2);
 ```
-``` c#
+```c#
 // use out parameters
 public () Validate1(float X1, float Y1, float X2, float Y2, out float X, out float Y)
 {
@@ -312,7 +312,7 @@ public () Validate1(float X1, float Y1, float X2, float Y2, out float X, out flo
     Y = Y1 + Y2;
 }
 ```
-``` c#
+```c#
 // return a named tuple and out parameters
 public (float X, float Y) Validate1(float X1, float Y1, float X2, float Y2, out float TotalSum)
 { 
@@ -329,7 +329,7 @@ If a node need to be validated every frame, regardless if an Input Property has 
 
 This Node generates a random number every frame even if its Input Property `Range` doesn't change:
 
-``` c#
+```c#
 public class MyRandomGenerator : VxContentNode
 {
     Random RND = new Random();
@@ -350,7 +350,7 @@ In order to define event receiver methods just declare a function that follows t
 
 If the Method was called by an event that carried an argument, you can retrieve its value by reading the MethodArg property. It returns null, if no argument was attached.
 
-``` c#
+```c#
 // define a method named 'Nudge' without argument
 public void MethodNudge() 
 {
@@ -364,7 +364,7 @@ If you want to emit event, simple declare a field in your node of type `Ventuz.E
 * **int arg** : optional int32 argument to be attached to the event (default 0)
 * **int delay** : number of frames this event is delayed being received by any other node (default 0)
 
-``` c#
+```c#
 // this node fires an event if the input 'Fire' turns to true
 public class MyBang : VxContentNode
 {
@@ -394,7 +394,7 @@ Custom Vx Nodes, which are derived from VxHierarchyNode, have another API within
 * Axis (World)
 * Order (order in which the outputs are rendered)
 
-``` c#
+```c#
 bool SetOutput(int index, bool? blocked = null, float? alpha = null, in Matrix44A? axis = null, int? order = null);
 ```
 
@@ -406,7 +406,7 @@ The Layer API provides a method to modify settings how the children are processe
 * Opacity (Transparency, inverse alpha)
 * Order (order in which the child laqyers are rendered)
   
-``` c#
+```c#
 bool SetChildOptions(int index, bool? blocked = null, float? opacity = null, int? order = null);
 ```
 
@@ -437,7 +437,7 @@ Finnaly the call to `CreateMesh` will return an existing mesh that matches the *
 
 The resulting `IMesh` can now returned as Output Property to be used by other nodes (for example the *Geometry Renderer* node) or it is used internally during the [Rendering Phase](#rendering-phase) of the same node. In this case the `IMesh` must be stored locally in a class field or the name must follow the naming rules for intermediate properties. (rename `ValidateGeo` to `Validate_Geo` and return void)
 
-```
+```c#
 public class MySimpleRect : VxContentNode
 {
     public IMesh ValidateGeo(float Size)
@@ -498,7 +498,7 @@ Using .Net 6, this API will use `Span<T>` technology to achieve much faster *upl
 
 The resulting resource is represented by `ITexture`. This type can be used as input and output property to be bound to **Texture Loader** or **Material** Nodes. 
 
-``` c#
+```c#
 public class MyTextureGenerator : VxContentNode
 {
     public enum MyColors
@@ -576,7 +576,7 @@ This simple example layouts a text by using the `Code` typeface preset configure
 
 The resulting `IText` object can currently be used as input and output property. It is also required to generate `ITextRenderObject` resource if you like to render the text - otherwise the normal `Text 2D` and `Text 3D` node can receive an `IText` and render it.
 
-``` c#
+```c#
 public class MyBlockText : VxContentNode
 {
     public IText ValidateText(int Number)
@@ -593,7 +593,7 @@ The method `CreateTextRenderObject2D` has an optional `style` parameter. The fol
 
 See also [Rendering Phase](#rendering-phase) for information about the `RenderText` call.
 
-``` c#
+```c#
 public class MyTextRenderer : VxHierarchyNode
 {
     IText text1, text2;
@@ -641,7 +641,7 @@ The example below defines two content nodes `MyConnectionCreator` which is respo
 
 If you are not aware of *ParameterSets* please read section [Meshes](#meshes)
 
-``` c#
+```c#
 public class MyConnectionCreator : VxContentNode
 {
     public struct PS : ICustomResourceParameter<MyConnectionResource>
@@ -702,7 +702,7 @@ This Example renders one given `Geoemtry` two time with two different materials 
 
 Please note that `Render...` functions also can have their Input Properties declared as parameters, so there is no need to store them in member fields of your node class.
 
-``` c#
+```c#
 public class MyRenderer : VxHierarchyNode
 {
     public void Render1(IMesh Geometry, IMaterial Material1)
@@ -748,18 +748,18 @@ The `RenderMesh` API function can be used during the Render Phase of HierarchyNo
 * **Subset** if the mesh has subsets (`IMesh.SubsetCount > 0`), the index to render. The value of `null` or any negative number renders all subsets
 * **Frame** if the mesh has frames (`IMesh.FrameCount > 0`), this intra-frame index to render. 
 
-```` c#
+```c#
 void RenderMesh(IMesh mesh, RenderMeshDetails[] details = null);
-````
+```
 
 #### Render Text
 
 The `RenderText` API function can be used during the Render Phase of HierarchyNodes. It is able to render a previously create resource of type `ITextRenderObject` with an optional world axis. See [Text Resource](#text) section about how to create text render objects.
 
 
-```` c#
+```c#
 void RenderText(ITextRenderObject textRenderObject, in Vx.Matrix44A? axis = null);
-````
+```
 
 ### Design Phase 
 
@@ -773,7 +773,7 @@ The verb function are delared as method of your node class, while the usual nami
 
 The property and layer edit call the Verb functions several times to probe if the verb is currently available. In this case the `probe` argument is `true` and the method implementation should not perform any action but return the state of the verb. If the verb was clicked by the user the `probe` parameters is `false` and the implementation should do its job. The returned VerbState is ignored after execution.
 
-``` c#
+```c#
 public VerbState VerbDoSomething(bool probe)
 {
     if( probe )
@@ -793,7 +793,7 @@ Every Vx Node can define one or more icons to be displayed in Ventuz Designer (s
 
 ***Please note that this interface is called everytime the GUI is drawn! So keep the implementation as fast as possible!***
 
-``` c#
+```c#
 public interface IIconIndex
 {
     int IconIndex { get; }
@@ -806,7 +806,7 @@ If a Vx Node implements the interface `ITooltip` the user can received additiona
 
 ***Please note that this interface is called everytime the GUI wants to display the tooltip! So keep the implementation as fast as possible!***
 
-``` c#
+```c#
 public interface ITooltip
 {
     string Tooltip { get; }
@@ -832,7 +832,7 @@ Vx Node may reference file represented by `Uri`. By implementing the interface `
 
 ***This interface is only called during export operations and does not have to be real-time capable**
 
-``` c#
+```c#
 public interface IUsedUris
 {
     Uri[] GetUsedUris();
@@ -851,7 +851,7 @@ There are different groups of metadata attributes available:
 
 Attributes for members are mostly defined at class definition, because vx-members definitions appear at multiple locations in the code (e.g. multiple validation functions). To get the best overview about metadata the are mostly defined at the top of the class:
 
-``` c#
+```c#
 
 [VxToolBox("String Splitter VX", "Glare", "Split", "This node splits a text string into text fragments which can be accessed by their index.", false)]
 [VxIcon("NodeIcons.Logic.Expressions")]
@@ -994,7 +994,7 @@ A group is defined by a mask. this mask is the unique identifier of a group.
 * **DisplayName** the display name of this field
 
 Example:
-``` c#
+```c#
 [VxFlagGroupName(0x0f, "Select one or more flags")]
 [VxFlagGroupName(0x30, "Select a color")]
 [Flags]
