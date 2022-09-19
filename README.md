@@ -59,7 +59,7 @@ Table of Contents
 
 ## Abstract
 
-Ventuz Extensions is a new API that is available as of Ventuz version 6.12 - but still in alpha state, so breaking changes are to be expected in newer releases.
+Ventuz Extensions is a new API that is available as of Ventuz version 6.12 - but still in **Alpha** state, so breaking changes are to be expected in newer releases.
 
 Ventuz Extensions (or VX for short) enables programmers to extend the functionality of Ventuz and thus solve tasks that are impossible or difficult to implement with the built-in capabilities.
 
@@ -69,15 +69,15 @@ A Ventuz user can thus extend or adapt the functionality of Ventuz to his or her
 
 ## Using the API
 
-A Ventuz extension is basically always a .net assembly that must meet certain requirements:
+A Ventuz extension is basically always a .Net assembly that must meet certain requirements:
 * .Net Class Library
 * .Net Framework 4.8
 * a reference to the current version of `Ventuz.Extension.dll` (found in the installation folder of Ventuz)
 * x64 processor architecture
-* recommended language: C# (others are not tested)
+* recommended language: C# (others have not been tested)
 * assembly must have the file extension `.vx.dll`
 
-During the development of a VX code (assembly) it is recommended to configure the output folder as described in [Deployment](#deployment) and to set `Ventuz.exe` or `VentuzPresenter.exe` in the Debug Configuration. Starting the debugger then starts Ventuz (Designer or Runtime) as a host process and debugging runs completely in Microsoft Visual Studio or Visual Studio Code in a very pleasant way. 
+During the development of a VX code (assembly) it is recommended to configure the output folder as described in [Deployment](#deployment) and to set `Ventuz.exe` or `VentuzPresenter.exe` as *host process* in the Debug Configuration ("Start external program"). Starting the debugger then starts Ventuz (Designer or Runtime) as a host process and debugging runs completely in Microsoft Visual Studio or Visual Studio Code in a very pleasant way. 
 
 Vx code is currently loaded once when the Ventuz process is started. Changes to the code therefore require a complete restart of Ventuz or the debugger. Edit and Continue is possible, however! Unfortunately, .net 4.8 does not allow reloading executable code without a huge performance hit. This might change once Ventuz will run on .net 6. See [Roadmap](#roadmap)
 
@@ -98,12 +98,12 @@ This path can be changed, however, by editing the file in the Ventuz installatio
 ```
 VentuzEnvironment.ini
 ```
-the entry
+and the entry
 ```
 # Folder to search for Ventuz Extensions (VX)
 ;VX_MANUAL_CODE_LOCATION=%HOMEDRIVE%%HOMEPATH%\Documents\%VENTUZVER%\Vx
 ```
-and redirect `VX_MANUAL_CODE_LOCATION` to another folder on your system. (you have to uncomment the line by removing the semi-colon prefix). This is highly recommened for Vx-Developers, because you can point the Vx folder to your code folders and make sure to have the correct access right at this location. Final installations can either use the default path or redirect to a special location for easier management.
+and thus redirect `VX_MANUAL_CODE_LOCATION` to another folder on your system (you have to uncomment the line by removing the semi-colon prefix). This is highly recommened for Vx-Developers, because you can point the Vx folder to your code folders and make sure to have the correct access right at this location. Final installations can either use the default path or redirect to a special location for easier management.
 
 * Each individual Vx code (or assembly) must reside in its own subfolder, ideally named the same as the actual assembly. 
 * The Vx assembly itself must end with the file extension `.vx.dll` to be recognized by Ventuz.
