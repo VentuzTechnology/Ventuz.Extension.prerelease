@@ -134,7 +134,7 @@ This tool is currently very primitive, but is very useful to have the Vx code an
 ```
 Vx.exe MyFirstVxCode.vx.dll
 ```
-You will see an output on the screen that contains some analysis information, warnings and errors. Please do not reply to this output for now, as it will change in later releases.
+You will see an output on the screen that contains some analysis information, warnings and errors. Please do not rely to this output for now, as it will change in later releases.
 
 ## API: Custom Nodes
 
