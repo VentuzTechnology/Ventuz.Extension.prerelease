@@ -294,8 +294,8 @@ Ventuz.Extension.ICustomResource
 #### Multiple Outputs
 
 What is if my Validation function produces more than just a single value? There are several option to output multiple values:
-1. Use named tuples as return value (the name of the `Validation...` function is not used anymore but must specify any dummy name to follow the convention)
-2. Use output parameters. In this case the Validation Function can return void, but the name of the `Validation...` must specify any dummy name to follow the convention
+1. Use *named tuples* as return value (the name of the `Validation...` function is not used anymore but must specify any dummy name to follow the convention)
+2. Use *out* parameters. In this case the Validation Function can return void, but the name of the `Validation...` must specify any dummy name to follow the convention
 3. A mix of 1 and 2
 
 Examples:
@@ -325,9 +325,9 @@ Please note that Input Properties cannot be declared as Tuples!
 
 #### Value Generators
 
-If a node need to be validated every frame, regardless if an Input Property has changed or it doesn't come with any inputs at all, the function is called a *Generate Function* and follows the naming rule `Generate...`. 
+If a node needs to be validated every frame, regardless if an Input Property has changed or not or it even does not come with any inputs at all, the function is called a *Generate Function* and follows the naming rule `Generate...`. 
 
-This Node generates a random number every frame even if its Input Property `Range` doesn't change:
+This Node example generates a random number every frame even if its Input Property `Range` doesn't change:
 
 ```c#
 public class MyRandomGenerator : VxContentNode
@@ -340,9 +340,9 @@ public class MyRandomGenerator : VxContentNode
 ```
 #### Methods and Events
 
-The validation phase also allowes to receive events (`Methods`) or send event (`Events`)
+The validation phase also allows to receive events (`Methods`) or send events (`Events`)
 
-In order to define event receiver methods just declare a function that follows the rules:
+In order to define event receiver methods just declare a function that follows these rules:
 * Visibility is `public`
 * Function name must start with `Method...' 
 * return type is `void`
@@ -360,9 +360,9 @@ public void MethodNudge()
 
 ```
 
-If you want to emit event, simple declare a field in your node of type `Ventuz.Extension.Event`. This field is completely managed by Ventuz and is never *null*. Only use this field to emit the event. The delegate `Event` has two optional parameters:
-* **int arg** : optional int32 argument to be attached to the event (default 0)
-* **int delay** : number of frames this event is delayed being received by any other node (default 0)
+If you want to emit events, simply declare a field in your node of type `Ventuz.Extension.Event`. This field is completely managed by Ventuz and is never *null*. Only use this field to emit the event. The delegate `Event` has two optional parameters:
+* **int arg**: optional int32 argument to be attached to the event (default 0)
+* **int delay**: number of frames this event is delayed before received by any other node (default 0)
 
 ```c#
 // this node fires an event if the input 'Fire' turns to true
@@ -412,7 +412,7 @@ bool SetChildOptions(int index, bool? blocked = null, float? opacity = null, int
 
 #### Resources
 
-Resources can also be created during the validation phase. This process is somewhat more complex, as Ventuz has an internal resource management that prevents duplicate generation and optimally manages memory usage. To fulfill this purpose, each resource must be able to identify itself uniquely. This is done via its so-called *ParameterSet* and its *ResourceGenerator*. In Vx these two factors are combined to keep it as simple as possible.
+Resources can also be created during the validation phase. This process is somewhat more complex, as Ventuz has an internal *Resource Management* that prevents duplicate generation and optimally manages memory usage. To fulfill this purpose, each resource must be able to identify itself uniquely. This is done via its so-called *ParameterSet* and its *ResourceGenerator*. In Vx these two factors are combined to keep it as simple as possible.
 
 Each node has access to resource generation functions. In the current version of Vx the following resources are available:
 * **Mesh**
@@ -423,19 +423,19 @@ Each node has access to resource generation functions. In the current version of
 
 ##### Meshes
 
-This example validates a `Size` parameter into a simple rectangle geometry. It uses the function `CreateMesh` to validate the Output Property `Geo`. The name of the Output property is specified at the call to `CreateMesh` to let Ventuz know with property storage to use. Since this example has only a single `IMesh` output define, this name could be *null* - Ventuz would use the first and only IMesh property found. It is recommended to always specify the name to the `Create...` functions.
+The following example validates a `Size` parameter into a simple rectangle geometry. It uses the function `CreateMesh` to validate the Output Property `Geo`. The name of the Output property is specified at the call to `CreateMesh` to let Ventuz know with property storage to use. Since this example has only a single `IMesh` output defined, this name could be *null* - Ventuz would use the first and only IMesh property found. It is recommended to always specify the name to the `Create...` functions.
 
-An additionally parameter of inner type `PS` is given. This type must be a `struct` and must implement `IMeshResourceParameter`. This struct is either used to identify the object and - if necessary - generate the resource. The identification is simple done by comparing the *ParameterSets* from existing resources with the one provided to the `Create...` call. The equality check is done by calling `object.Equals()`, so it may make sense to override implement the methods `Equals` and `GetHashcode` for such *ParameterSets* to improve performance.
+An additional parameter of inner type `PS` is given. This type must be a `struct` and must implement `IMeshResourceParameter`. This struct is either used to identify the object and - if necessary - generate the resource. The identification is simply done by comparing the *ParameterSets* from existing resources with the one provided to the `Create...` call. The equality check is done by calling `object.Equals()`, so it may make sense to override implement the methods `Equals` and `GetHashcode` for such *ParameterSets* to improve performance as stuct compares in .Net are very slow in the default implementation (see e.g. https://devblogs.microsoft.com/premier-developer/performance-implications-of-default-struct-equality-in-c/).
 
-You also override the `ToString` method to give some useful information in the Ventuz Resource Statistics view.
+You can also override the `ToString` method to give some useful information in the Ventuz Resource Statistics view.
 
-If the Ventuz Resource Manager cannot find an existing resource that equals to the requested one the implementation of `IMeshResourceParameter` is called to generate the resource (here the mesh).
+If the Ventuz Resource Manager cannot find an existing resource that equals the requested one, the implementation of `IMeshResourceParameter` is called to generate the resource (here the mesh).
 
 The current API for creating meshes is quite simple. Create an array of vertices (there are several types define) and an index buffer (16bit ushort or 32bit uint) and call `CreateTriangleList`. Other mesh types like TriangleFan are not supported yet. See [Roadmap](#roadmap) 
 
 Finally the call to `CreateMesh` will return an existing mesh that matches the *ParameterSet* or the newly created resource.
 
-The resulting `IMesh` can now returned as Output Property to be used by other nodes (for example the *Geometry Renderer* node) or it is used internally during the [Rendering Phase](#rendering-phase) of the same node. In this case the `IMesh` must be stored locally in a class field or the name must follow the naming rules for intermediate properties (rename `ValidateGeo` to `Validate_Geo` and return void).
+The resulting `IMesh` can now be returned as Output Property to be used by other nodes (for example the *Geometry Renderer* node) or it is used internally during the [Rendering Phase](#rendering-phase) of the same node. In this case the `IMesh` must be stored locally in a class field or the name must follow the naming rules for intermediate properties (rename `ValidateGeo` to `Validate_Geo` and return void).
 
 ```c#
 public class MySimpleRect : VxContentNode
@@ -560,10 +560,10 @@ public class MyTextureGenerator : VxContentNode
 ##### Text
 
 Text in Ventuz is separated in two different entities:
-* `IText` (layouted text, like a BlockText Node produces)
+* `IText` (text layout, like a BlockText Node produces)
 * `ITextRenderObject` (resource that can be rendered)
 
-A Text resource doesn't need the complex way of `ParametSets`, because the parameters used to layout a text are always the same:
+A Text resource does not need the complex way of `ParametSets`, because the parameters used to layout a text are always the same:
 * The text itself
 * Typeface (the font to use)
 * Layout options (like known from the BlockText node)
@@ -583,7 +583,7 @@ public class MyBlockText : VxContentNode
 }
 ```
 
-This example also used the API `CreateTextRenderObject2D` which uses an `IText` object to generate a resource that can be rendered by Vx-Code. Currently it is not possible to create 3D resource for text rendering. See [Roadmap](#roadmap)
+This example also uses the API `CreateTextRenderObject2D` which uses an `IText` object to generate a resource that can be rendered by Vx-Code. Currently it is not possible to create 3D resource for text rendering. See [Roadmap](#roadmap)
 
 The method `CreateTextRenderObject2D` has an optional `style` parameter. The following options are available:
 * *null*, for a default style
@@ -626,13 +626,13 @@ public class MyTextRenderer : VxHierarchyNode
 
 Materials are represented by the `IMaterial` type and can be used as Input and Output Properties. 
 
-`IMaterial` inputs could be used to give a node certain material(s) used during the [Rendering Phase](#rendering-phase), or it could output a switched selection of it (a material switcher).
+`IMaterial` inputs can be used to give a node certain material(s) used during the [Rendering Phase](#rendering-phase), or it could output a switched selection of it (a material switcher).
 
-The current version of Vx doesn't provide an API to create your own materials. See [Roadmap](#roadmap). 
+The current version of Vx does not provide an API to create your own materials. See [Roadmap](#roadmap). 
 
 ##### Custom Resources
 
-Another resource type that is only known in the Vx-context if the `Custom Resource' which can be used to interchange information from on Vx-Node to another and the resource management should be used to avoid multiple resources of the same content. 
+Another resource type that is only known in the Vx-context if the `Custom Resource' which can be used to interchange information from one Vx-Node to another and the resource management should be used to avoid multiple resources of the same content. 
 
 A good example could by a native data connection to a proprietary server. One Vx Node represents this connection with its parameters (connection string) as a *custom resource*. Another Vx-Node knows the type of this *custom resource* and uses it to gather data from the connection (the same technique is used by the original Database nodes from Ventuz, also the Serial Text node - COM does the same).
 
@@ -699,7 +699,7 @@ Currently only the Hierarchy Node (derived from `VxHierarchyNode`) can use the r
 
 This Example renders one given `Geometry` two time with two different materials `Material1` and `Material2`.
 
-Please note that `Render...` functions also can have their Input Properties declared as parameters, so there is no need to store them in member fields of your node class.
+Please note that `Render...` functions can also have their Input Properties declared as parameters, so there is no need to store them in member fields of your node class.
 
 ```c#
 public class MyRenderer : VxHierarchyNode
@@ -732,11 +732,11 @@ The calls `PushMaterial` and `PopMaterial` allows you to set a material (receive
 
 Any subsequent render will use the entirely pushed material stack.
 
-If a material is left on stack (`PopMaterial` was not called), the next `Render...` function will inherit this material as well other nodes connected to any of the outputs of a `VxHierarchyNode`.
+If a material is left on stack (`PopMaterial` was not called), the next `Render...` function will inherit this material as well as other nodes connected to any of the outputs of a `VxHierarchyNode`.
 
 #### Render Mesh
 
-The `RenderMesh` API function can be used during the Render Phase of HierarchyNodes. It received the mesh to renderer and an optional array of instances. If this array is omitted the mesh will be rendered once with defaults. A null array renders nothing. The `RenderMeshDetails` have several options how and how many times a mesh should be rendered. The length of the array simply decides the number of instances to be rendered.
+The `RenderMesh` API function can be used during the Render Phase of HierarchyNodes. It received the mesh to be rendered and an optional array of instances. If this array is omitted the mesh will be rendered once with defaults. A null array renders nothing. The `RenderMeshDetails` have several options how and how many times a mesh should be rendered. The length of the array simply decides the number of instances to be rendered.
 
 * **AxisMode**
   * **Identity** `Axis` is not used, mesh will be rendered at current world transformation
@@ -762,15 +762,15 @@ void RenderText(ITextRenderObject textRenderObject, in Vx.Matrix44A? axis = null
 
 ### Design Phase 
 
-The Design Phase is actually *between* the frame, before *Validation* and *Rendering*. In this phase, the scene graph (nodes and others) could be modified. This is what Ventuz Designer does. The current Design API is quite simple and currently only for nodes and their required GUI features, but it is planned to give full access to the scene tree, all nodes, internal and external Vx-nodes in later versions of Vx. See [Roadmap](#roadmap)
+The Design Phase is actually *between* the rendered frames, before *Validation* and *Rendering*. In this phase, the scene graph (nodes and others) could be modified. This is what Ventuz Designer does. The current Design API is quite simple and currently only for nodes and their required GUI features, but it is planned to give full access to the scene tree, all nodes, internal and external Vx-nodes in later versions of Vx. See [Roadmap](#roadmap)
 
 #### Verbs 
 
-Every Vx-Node can implement `verbs`. A verb is a GUI-action, displayed as a button at the bottom of the Property and Layer Editor. If the use presses such a verb button the dedicated method in your Vx-code is called.
+Every Vx-Node can implement `verbs`. A verb is a GUI-action, displayed as a button at the bottom of the Property and Layer Editor. If the user presses such a verb button the dedicated method in your Vx-code is called.
 
-The verb function are declared as method of your node class, while the usual naming rules take place again; a method named `VerbDoSomething` defines a verb with the name `DoSomething`.
+The verb functions are declared as method of your node class, while the usual naming rules take place again; a method named `VerbDoSomething` defines a verb with the name `DoSomething`.
 
-The property and layer edit call the Verb functions several times to probe if the verb is currently available. In this case the `probe` argument is `true` and the method implementation should not perform any action but return the state of the verb. If the verb was clicked by the user the `probe` parameters is `false` and the implementation should do its job. The returned VerbState is ignored after execution.
+The Property and Layer Editor calls the Verb functions several times to probe if the verb is currently available. In this case the `probe` argument is `true` and the method implementation should not perform any action but return the state of the verb. If the verb was clicked by the user the `probe` parameters is `false` and the implementation should do its job. The returned VerbState is ignored after execution.
 
 ```c#
 public VerbState VerbDoSomething(bool probe)
@@ -788,7 +788,7 @@ public VerbState VerbDoSomething(bool probe)
 
 #### Icon Index
 
-Every Vx Node can define one or more icons to be displayed in Ventuz Designer (see [Metadata](#metadata)). If the node implements the interface `IIconIndex` to tell Ventuz the icon index to use.
+Every Vx Node can define one or more icons to be displayed in Ventuz Designer (see [Metadata](#metadata)), if the node implements the interface `IIconIndex` to tell Ventuz which icon index to use.
 
 ***Please note that this interface is called every time the GUI is drawn! So keep the implementation as fast as possible!***
 
@@ -816,7 +816,7 @@ public interface ITooltip
 
 Any node in Ventuz can have a name which is changeable by the user. If a Vx Node implements the interface `IName` the user cannot edit or change the name anymore, instead a static name is displayed in the GUI. This is very useful if simple nodes must display a state as short text and a custom name is not required.
 
-***Please note that this interface is called every time the GUI is drawn! So keep the implementation as fast as possible! Consider a caching for the returned name if it doesn't change.***
+***Please note that this interface is called every time the GUI is drawn! So keep the implementation as fast as possible! Consider a caching for the returned name if it does not change.***
 
 ``` c#
 public interface IName
@@ -827,7 +827,7 @@ public interface IName
 
 #### Used Uris
 
-Vx Node may reference file represented by `Uri`. By implementing the interface `IUsedUris`, the node has the ability to report all used Uri reference to Ventuz if the scenes containing the node is exported as VPR (presentation), VZA (scene archive) or VPA (project archive)
+Vx Nodes may reference files represented by `Uri`. By implementing the interface `IUsedUris`, the node has the ability to report all used Uri reference to Ventuz if the scenes containing the node is exported as VPR (presentation), VZA (scene archive) or VPA (project archive)
 
 **This interface is only called during export operations and does not have to be real-time capable.**
 
@@ -840,7 +840,7 @@ public interface IUsedUris
 
 ### Metadata
 
-All code example shown above are not using any metadata to make names and other GUI information comfortable to human readers. Names are limited to the naming convention of C# (.net) and cannot contain spaces or special characters. Also icons and other descriptive information are kept very simple if you don't annotate your code with metadata. To do so, Vx uses `Attributes` to decorate your class, methods, fields, etc.
+All code example shown above are not using any metadata to make names and other GUI information comfortable to human readers. Names are limited to the naming convention of C# (.net) and cannot contain spaces or special characters. Also icons and other descriptive information are kept very simple if you do not annotate your code with metadata. To do so, Vx uses `Attributes` to decorate your class, methods, fields, etc.
 
 There are different groups of metadata attributes available:
 * for nodes (classes)
@@ -869,7 +869,7 @@ public class VX_TEXT_SPLITTER : VxContentNode
 
 #### Node Icon
 
-`VxIconAttribute` is used at class level and assign an icon resource to be displayed as icon. 
+`VxIconAttribute` is used at class level and assigns an icon resource to be displayed as node icon. 
 * **Name** The full qualified name of the embedded resource within your vx-assembly
 * **Index** Index of the icon. See below...
 
@@ -897,7 +897,7 @@ The optional `Index` allows you to assign multiple icons for a single class. Vx 
 `VxToolBoxAttribute` can set some information how a Vx Node appears in the Toolbox:
 * **Name** overrides the class name which is used by default.
 * **Category** the Toolbox-Tab or Category the node appears in
-* **DefaultName** the name the node is named if an instance is created. If the name contains a "*" it will be replaced by an unique count. A DefaultName of `"Node*"` would procude names like this `"Node1"`, `"Node2"`, `"Node3"`, ...
+* **DefaultName** the name of the node if an instance is created. If the name contains a "*" it will be replaced by an unique count. A DefaultName of `"Node*"` would procude names like this `"Node1"`, `"Node2"`, `"Node3"`, ...
 * **Description** A short description that is displayed in the Toolbox when hovering or in the dynamic help bar (bottom of Designer, Shift-F1)
 * **Small** Only applicable for Content Nodes. New instances are displayed only half the size and name is not rendered.
 
@@ -910,47 +910,47 @@ The optional `Index` allows you to assign multiple icons for a single class. Vx 
 * **InitialOutputNames** array of names to define number and names of output a Vx Hierarchy Node initially has.
 
 #### Member Legacy Names
-`VxLegacyNamesAttribute` specifies one or more legacy names for a single member. If the Vx developer decided to rename a property this attribute would let Ventuz know about its previous name(s). This is very important to keep scenes compatible when saved with an older version of the Vx code and the new version wants to read (import) that older scene!
-* **Member** the name of the member this attribute belong to
+`VxLegacyNamesAttribute` specifies one or more legacy names for a single member. If the Vx developer decides to rename a property, this attribute would let Ventuz know about its previous name(s). This is very important to keep scenes compatible when saved with an older version of the Vx code and the new version wants to read (import) that older scene!
+* **Member** the name of the member this attribute belongs to
 * **LegacyNames** list of legacy names.
 
 ***Legacy names are only used if a loaded property could not be found by its name. Therefore a cross-rename is not possible!***
 
 #### Member Label
 `VxLabelAttribute` is used to rename the technical name into a human readable text. A name like 'ClearContent' can be renamed in 'Clear Content`
-* **Member** the name of the member this attribute belong to
+* **Member** the name of the member this attribute belongs to
 * **Label** Text to display in GUI. (property editor)
 
 #### Members Category
 `VxCategoryAttribute` defines the category (or group) of members. The Property Editor displays a folder for all members in the same Category. If this attribute is omitted the default category `Misc` is used.
-* **Members** the name(s) of the member(s) this attribute belong to
+* **Members** the name(s) of the member(s) this attribute belongs to
 * **Category** the display name of the category
 * **DefaultCollapsed** indicates if this category is collapsed or expanded by default.
 
 #### Members Tab
 'VxTabAttribute' is used to group properties under a Tab within the property editor.
-* **Members** the name(s) of the member(s) this attribute belong to
+* **Members** the name(s) of the member(s) this attribute belongs to
 * **Tab** the display name of the tab
 
 #### Members Description
 `VxDescriptionAttribute` can add a descriptive text for one or multiple members. This description is displayed when hovering over the member in the Property Editor..
-* **Members** the name(s) of the member(s) this attribute belong to
+* **Members** the name(s) of the member(s) this attribute belongs to
 * **Description** the description text. Can be multi-line by using new-line characters `"\n"`.
 
 #### Members Default Value
 `VxDefaultValueAttribute` assign default values to one or more input properties. The property editor can then reset-to-default
-* **Members** the name(s) of the member(s) this attribute belong to
+* **Members** the name(s) of the member(s) this attribute belongs to
 * **Value** the value used as default.
 
 ***It is mandatory that the specified literal default value is of the same type as the members. For example float properties must specify their default value with the f-modifier in C#: `1.0f`. A special attribute constructor with parameters `type` and `value` can be used to call the available TypeConverters for the given `type` to convert the `value` into the actual type of the property.***
 
 #### Members Favored
-`VxFavoredAttribute` defines if the properties are 'favored'. If the Property Editor is configured to display only 'favored' properties when the node is selected in Hierarchy Editor (see option of Property Editor), see property editor gets less populated and improved readability.
-* **Members** the name(s) of the member(s) this attribute belong to
+`VxFavoredAttribute` defines if the properties are 'favored'. If the Property Editor is configured to display only 'favored' properties when the node is selected in Hierarchy Editor (see option of Property Editor), see Property Editor gets less populated and improved readability.
+* **Members** the name(s) of the member(s) this attribute belongs to
 
 #### Members Favored
-`VxNumericAttribute` applies only to numeric properties (`float`, `int`, `double`). It defines certain options the numeric value is displayed and edited in the Property Editor.
-* **Members** the name(s) of the member(s) this attribute belong to
+`VxNumericAttribute` applies only to numeric properties (`float`, `int`, `double`). It defines certain options how the numeric value is displayed and edited in the Property Editor.
+* **Members** the name(s) of the member(s) this attribute belongs to
 * **MinValue** if specified, the minimum value 
 * **MaxValue** if specified, the maximum value 
 * **StepValue** if specified, the edit speed when dragged&moved by mouse
@@ -961,13 +961,13 @@ The optional `Index` allows you to assign multiple icons for a single class. Vx 
 
 #### Members String
 `VxStringAttribute` decorates string input properties and tells Ventuz how to use the Text Editor.
-* **Members** the name(s) of the member(s) this attribute belong to
+* **Members** the name(s) of the member(s) this attribute belongs to
 * **Type** type of the string/text (SingleLine, MultiLine, CSharp, XML) 
 * **LiveUpdate** if true, the nodes gets updated/validated on every change made in the Text Editor. Otherwise the update is done if the Text Editor loses focus.
 
 #### Members With Alpha
 'VxWithAlphaAttribute' instructs the Property Editor to display also the ***A*** (alpha) value for a color. This attribute only applies to color properties.
-* **Members** the name(s) of the member(s) this attribute belong to
+* **Members** the name(s) of the member(s) this attribute belongs to
 
 #### Members Uri
 `VxUriAttribute` applies to input properties of type `Uri` and instruct the File-Open dialog to display the right files and browse the correct data pool (e.g. *Textures* or *Data*)
@@ -979,7 +979,7 @@ The optional `Index` allows you to assign multiple icons for a single class. Vx 
 * a group is a selection (or a sub-enumeration), or
 * a group is a flags enumeration
 
-Ventuz can combine both technologies in a single enumeration (.net has the `[Flags]` attribute). This help to put as much information as possible into a single enumeration.
+Ventuz can combine both technologies in a single enumeration (.Net has the `[Flags]` attribute). This helps to put as much information as possible into a single enumeration.
 
 A group is defined by a mask. This mask is the unique identifier of a group.
 
