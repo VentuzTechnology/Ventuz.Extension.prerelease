@@ -279,7 +279,7 @@ string,
 System.Uri
 
 // arrays
-bool[], int[], float[], double[], string[]
+bool[], int[], byte[], float[], double[], string[]
 
 // math arrays
 Ventuz.Vx.Matrix44[], Ventuz.Vx.Matrix44A[]
