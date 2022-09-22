@@ -12,6 +12,7 @@ Table of Contents
   - [Architecture](#architecture)
     - [Vx-Tool (vx.exe)](#vx-tool-vxexe)
   - [API: Custom Nodes](#api-custom-nodes)
+    - [Logging](#logging)
     - [Constructor and IDisposable](#constructor-and-idisposable)
     - [Persistence](#persistence)
     - [Phases](#phases)
@@ -155,6 +156,17 @@ public class MyEmptyNode : VxContentNode
 {
 }
 ```
+
+### Logging
+
+All base classes provide logging methods to send messages to the Ventuz log. For exception you can set the paramter. It may help to identify the actual problem (like *File Not Found*). The option parameter *popupInDesigner* shows an error popup window in *Ventuz Designer*. If you expect many errors (like every frame) keep this parameter set to *false*. Otherwise the user may have no chance to fix the error, because the GUI is popping up error windows.
+```c#
+void LogDebug(string message);
+void LogInfo(string message, bool popupInDesigner = false);
+void LogWarning(string message, Exception ex = null, bool popupInDesigner = false);
+void LogError(string message, Exception ex = null, bool popupInDesigner = false);
+```
+
 
 ### Constructor and IDisposable
 
@@ -908,6 +920,17 @@ The optional `Index` allows you to assign multiple icons for a single class. Vx 
 #### Node Initial Outputs
 `VxInitialOutputsAttribute` can be used on Node of type `VxHierarchyNode` and defines the number of outputs this node should initially have and how they are named. If this attribute is not present, a single output is created. An empty array will result in a node without any outputs.
 * **InitialOutputNames** array of names to define number and names of output a Vx Hierarchy Node initially has.
+
+#### Node Help Url
+
+Assign one or more `VxHelpUrlAttribute` to a vx-node class to specify help content. If the user presses the F1 key this Urls are shown in the popup. 
+* **Url** that point to the help content:
+    * Online Url, like `https://www.ventuz.com`
+    * Local path, like `c:\TEMP\readme.txt`
+    * Relative path, like `help\readme.html` (this path is expanded to the folder, where the vx-code was loaded from)
+* **Description** Description of this help.
+* **SystemExecution** If set to true, the resulting Url is send to the Windows-Shell, what opens the local Web-Browser for Url's. You also could execute `*.exe` files here. So please use this very carefully! 
+
 
 #### Member Legacy Names
 `VxLegacyNamesAttribute` specifies one or more legacy names for a single member. If the Vx developer decides to rename a property, this attribute would let Ventuz know about its previous name(s). This is very important to keep scenes compatible when saved with an older version of the Vx code and the new version wants to read (import) that older scene!
