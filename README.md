@@ -105,7 +105,7 @@ and the entry
 ```
 and thus redirect `VX_MANUAL_CODE_LOCATION` to another folder on your system (you have to uncomment the line by removing the semi-colon prefix). This is highly recommened for Vx-Developers, because you can point the Vx folder to your code folders and make sure to have the correct access right at this location. Final installations can either use the default path or redirect to a special location for easier management.
 
-* Each individual Vx code (or assembly) must reside in its own subfolder, ideally named the same as the actual assembly. 
+* Each individual Vx code (or assembly) must **reside in its own subfolder**, ideally named the same as the actual assembly. 
 * The Vx assembly itself must end with the file extension `.vx.dll` to be recognized by Ventuz.
 * Only the first found assembly that matches this naming pattern within a folder will be loaded. So make sure that there are not several files with this extension in one subfolder.
 
