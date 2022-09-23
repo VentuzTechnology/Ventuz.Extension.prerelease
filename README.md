@@ -660,7 +660,7 @@ public class MyConnectionCreator : VxContentNode
         public int Parameters;
 
         public MyConnectionResource GenerateResource()
-            => new MyConnection(Parameters); // give connection parameters
+            => new MyConnectionResource(Parameters); // give connection parameters
     }
 
     public MyConnectionResource ValidateConnection( int SomeInput )
