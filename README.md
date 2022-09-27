@@ -135,6 +135,11 @@ This tool is currently very primitive, but is very useful to have the Vx code an
 ```
 Vx.exe MyFirstVxCode.vx.dll
 ```
+optionally `vx.exe` can examine a given directory for all `*.vx.dll` found in it:
+```
+Vx.exe -dir vxfolder
+```
+
 You will see an output on the screen that contains some analysis information, warnings and errors. Please do not rely to this output for now, as it will change in later releases.
 
 ## API: Custom Nodes
