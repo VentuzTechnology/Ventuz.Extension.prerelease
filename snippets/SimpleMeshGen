@@ -1,0 +1,44 @@
+    [VxDynamicIcon("Geo")]
+    public class VX_SIMPLE_MESH_GEN : VxContentNode
+    {
+        public struct PS : IMeshResourceParameter
+        {
+            public float Size;
+
+            public IMesh GenerateMesh(IMeshFactory meshFactory)
+            {
+                var v = new VertexPN[4];
+
+                v[0].px = -Size;
+                v[0].py = Size;
+                v[0].nz = -1.0f;
+
+                v[1].px = -Size;
+                v[1].py = -Size;
+                v[1].nz = -1.0f;
+
+                v[2].px = Size;
+                v[2].py = Size;
+                v[2].nz = -1.0f;
+
+                v[3].px = Size;
+                v[3].py = -Size;
+                v[3].nz = -1.0f;
+
+                var i = new ushort[6];
+
+                i[0] = 0;
+                i[1] = 2;
+                i[2] = 1;
+
+                i[3] = 1;
+                i[4] = 2;
+                i[5] = 3;
+
+                return meshFactory.CreateTriangleList(v, i);
+            }
+        }
+
+        public IMesh ValidateGeo(float Size)
+            => CreateMesh("Geo", new PS() { Size = Size });
+    }
