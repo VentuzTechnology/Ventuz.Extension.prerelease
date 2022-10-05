@@ -8,9 +8,9 @@ The documentation can be found in the [Wiki section](https://github.com/VentuzTe
 
 # Downloads
 ## Ventuz Versions
-| Download Link        | Version           | Release Notes           |
+| Download Link        | Version           | Release Notes           | API Version |
 | ------------- |:-------------|:-------------|
-| http://www.ventuz.com/download/public/mdr/Ventuz_Setup_V5.04.00_30_x64.exe    | 6.12.00_30 | -- |
+| http://www.ventuz.com/download/public/mdr/Ventuz_Setup_V5.04.00_30_x64.exe    | 6.12.00_30 | -- | 0.9 |
 
 ## Tools
  Link        | Info           | 
