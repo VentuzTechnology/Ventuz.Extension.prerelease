@@ -9,6 +9,7 @@
     [VxIcon("FirstVXTest.Resources.Icons.BiggerEqual.svg", 5)]
     [VxIcon("FirstVXTest.Resources.Icons.Error.svg", 6)]
     [VxDefaultValue(0, "Operator")]
+    
     public class CompareDouble : VxContentNode, IIconIndex, ITooltip
     {
         public int IconIndex { get; set; }
