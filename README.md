@@ -1,6 +1,6 @@
 # Ventuz Extension API
 <p align="center">
-  <img  src="https://www.ventuz.com/wp-content/uploads/2019/10/ventuz-logo-weiss-300x86.png?x58583">
+  <img  src="images/ventuz.png">
 </p>
 
 # Documentation
