@@ -36,7 +36,7 @@ namespace Glare.VX
 
 	[VxDescriptionAttribute("The compression method to be used", "Method")]
 	[VxCategory(0, "Control", false, "Method")]
-	[VxDefaultValue(typeof(CompressionMethodEnum), "1", "Method")]
+	[VxDefaultValue(Glare.VX.CompressionMethodEnum.GZip, "Method")]
 
 	[VxDescriptionAttribute("The text that will be compressed", "Text")]
 	[VxCategory(1, "Input", false, "Text")]
@@ -108,7 +108,7 @@ namespace Glare.VX
 
 	[VxDescriptionAttribute("The decompression method to be used", "Method")]
 	[VxCategory(0, "Control", false, "Method")]
-	[VxDefaultValue(typeof(CompressionMethodEnum), "1", "Method")]
+	[VxDefaultValue(CompressionMethodEnum.GZip, "Method")]
 
 	[VxDescriptionAttribute("The base64-encoded data that will be decompressed", "Compressed")]
 	[VxCategory(1, "Input", false, "Compressed")]

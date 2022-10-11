@@ -75,7 +75,6 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files\Ventuz Technology Group\Ventuz 6\Vx.exe" $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
 </Project>
