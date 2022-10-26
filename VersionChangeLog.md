@@ -5,7 +5,7 @@ All notable changes to the Ventuz Extension API will be documented in this file.
 
 ## [6.12.00_242_37316] [0.9.0] - 26-10-2022
 ### Fixed
-Vx: fixed issues with calculation of BGroups in Vx-Nodes. closes #14705
+Vx: fixed issues with Node validation, which was caused by incorrect dependencies of in- and output properties
 
 ## [6.12.00_219_37118] [0.9.0] - 11-10-2022
 ### Fixed
