@@ -7,6 +7,8 @@ All notable changes to the Ventuz Extension API will be documented in this file.
 ### Fixed
 Vx: fixed issues with Node validation, which was caused by incorrect dependencies of in- and output properties
 
+All your extensions must be recompiled!
+
 ## [6.12.00_219_37118] [0.9.0] - 11-10-2022
 ### Fixed
 - vx.exe: wrong PlatformTarget in Release configuration - now also x64
