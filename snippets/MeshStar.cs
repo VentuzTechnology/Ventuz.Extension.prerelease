@@ -67,5 +67,5 @@
         }
 
         public IMesh ValidateGeo(int JagCount, float Size, float Inner)
-            => CreateMesh("Geo", new PS() { JagCount = JagCount, Size = Size, Inner = Inner });
+            => VX.Resources.CreateMesh("Geo", new PS() { JagCount = JagCount, Size = Size, Inner = Inner });
     }

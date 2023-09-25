@@ -8,7 +8,7 @@
             {
                 try
                 {
-                    using ( var stream = GetReadStream(File))
+                    using ( var stream = VX.IO.GetReadStream(File))
                     {
                         using (var reader = new StreamReader(stream))
                         {
@@ -18,7 +18,7 @@
                 }
                 catch (Exception ex)
                 {
-                    LogError("Failed to load file", ex);
+                    VX.Log.Error("Failed to load file", ex);
                 }
             }
             return "";

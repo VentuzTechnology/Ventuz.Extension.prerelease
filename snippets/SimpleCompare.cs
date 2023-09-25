@@ -59,7 +59,7 @@
                     return cmp >= 0;
                 default:
                     IconIndex = 6;
-                    LogError($"Invalid comparison operator: {op}");
+                    VX.Log.Error(this, $"Invalid comparison operator: {op}");
                     return false;
             }
         }

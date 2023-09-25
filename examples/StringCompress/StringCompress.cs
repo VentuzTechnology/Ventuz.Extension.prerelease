@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ventuz.Extension;
-using Ventuz.Kernel;
 using System.IO;
 using System.IO.Compression;
 
@@ -31,17 +30,19 @@ namespace Glare.VX
 		Deflate
 	}
 
-	[VxToolBox("String Compress VX", "Text", "Compress", "Compress a given string. The result is then base64-encoded.", false)]
+	[VxCategories("Control", "Input", "Output")]
+
+	[VxToolBox("String Compress VX", "Text", "Compress", "Compress a given string. The result is then base64-encoded.")]
 	[VxIcon("NodeIcons.Logic.Expressions")]
 
 	[VxDescriptionAttribute("The compression method to be used", "Method")]
-	[VxCategory(0, "Control", false, "Method")]
+	[VxCategory("Control", "Method")]
 	[VxDefaultValue(Glare.VX.CompressionMethodEnum.GZip, "Method")]
 
 	[VxDescriptionAttribute("The text that will be compressed", "Text")]
-	[VxCategory(1, "Input", false, "Text")]
+	[VxCategory("Input", "Text")]
 	
-	[VxCategory(2, "Output", false, "Compressed")]
+	[VxCategory("Output", "Compressed")]
 	[VxDescriptionAttribute("The compressed and then base64-encoded text", "Compressed")]
 	public class StringCompress : VxContentNode
 	{
@@ -94,7 +95,7 @@ namespace Glare.VX
 			}
 			catch (Exception ex)
 			{
-				VLog.Error("Glare.VX.StringCompress", $"Could not compress string: {ex.Message}", VPopup.Never);
+			 	Ventuz.Extension.VX.Log.Error("Glare.VX.StringCompress", $"Could not compress string: {ex.Message}");
 				return string.Empty;
 			}
 		}
@@ -102,18 +103,19 @@ namespace Glare.VX
 		protected string ValidateCompressed(string Text, CompressionMethodEnum Method) => CompressString(Text, Method);
     }
 
+	[VxCategories("Control", "Input", "Output")]
 	
-	[VxToolBox("String Decompress VX", "Text", "Decompress", "Base64-decode a given string and then decompress it.", false)]
+	[VxToolBox("String Decompress VX", "Text", "Decompress", "Base64-decode a given string and then decompress it.")]
 	[VxIcon("NodeIcons.Logic.Expressions")]
 
 	[VxDescriptionAttribute("The decompression method to be used", "Method")]
-	[VxCategory(0, "Control", false, "Method")]
+	[VxCategory("Control", "Method")]
 	[VxDefaultValue(CompressionMethodEnum.GZip, "Method")]
 
 	[VxDescriptionAttribute("The base64-encoded data that will be decompressed", "Compressed")]
-	[VxCategory(1, "Input", false, "Compressed")]
+	[VxCategory("Input", "Compressed")]
 
-	[VxCategory(2, "Output", false, "Text")]
+	[VxCategory("Output", "Text")]
 	[VxDescriptionAttribute("The compressed and then base64-encoded text", "Text")]
 	public class StringDecompress : VxContentNode
 	{
@@ -166,7 +168,7 @@ namespace Glare.VX
 			}
 			catch (Exception ex)
 			{
-				VLog.Error("Glare.VX.StringDecompress", $"Could not decompress string: {ex.Message}", VPopup.Never);
+                Ventuz.Extension.VX.Log.Error("Glare.VX.StringDecompress", $"Could not decompress string: {ex.Message}");
 				return string.Empty;
 			}
 		}

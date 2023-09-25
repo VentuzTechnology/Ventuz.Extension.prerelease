@@ -40,5 +40,5 @@
         }
 
         public IMesh ValidateGeo(float Size)
-            => CreateMesh("Geo", new PS() { Size = Size });
+            => VX.Resources.CreateMesh("Geo", new PS() { Size = Size });
     }
